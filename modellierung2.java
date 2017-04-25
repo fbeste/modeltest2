@@ -100,7 +100,7 @@ class Headquarter implements Detectable {
 
 
 
-Interface Detectable {
+interface Detectable {
   // not sure what this should do
   // however, in any class that implements this interface, there must be
   // a matching definition of detect()
