@@ -109,8 +109,8 @@ interface Detectable {
 
 class Modellierungsaufgabe {
   public static void main(String[] args) {
-    Headquarter hq = new Headquarter;
+    Headquarter hq = new Headquarter();
     Human eike = new Human("Eike");
-    hq.hidePerson((room)eike, hq.rooms[1])
+    hq.hidePerson((room)eike, hq.rooms[1]);
   }
 }
