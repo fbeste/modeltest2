@@ -74,6 +74,13 @@ class SecurityDoor extends Door {
   }
 }
 
+class Room {
+  private String name;
+  public void Room(String name){
+    this.name = name;
+  }
+}
+
 class Headquarter implements Detectable {
   public Room[] rooms;
   private Door[] doors;
