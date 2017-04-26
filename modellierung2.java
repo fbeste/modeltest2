@@ -46,33 +46,69 @@ class Robot extends Machine implements Detectable {
     }
 }
 
+interface SecurityLock {
+  boolean authenticate(String code);
+}
 
 
-abstract class Door {
-  protected boolean open_state;
-  public String material;
-
-  public Door(String material, Room a, Room b) {
-    //Constructor
-    this.material = material;
-    this.room_a = a;
-    this.room_b = b;
-  }
-  public void open() {}
-  public void close() {}
-  public boolean isOpen() {
-    return true;
+class Room {
+  public String name;
+  public void Room(String name){
+  // Constructor
+      this.name = name;
   }
 }
 
-class InnerDoor extends Door {}
 
-class EntranceDoor extends Door {
+abstract class Door {
+    protected boolean open_state;
+    public String material;
+
+    public Door(String material) {
+    //Constructor
+        this.material = material;
+    }
+    public void open() {}
+    public void close() {}
+    public boolean isOpen() {
+        return true;
+    }
+}
+
+class InnerDoor extends Door {
+    protected Room room_a;
+    protected Room room_b;
+    InnerDoor(String material, Room room_a, Room room_b) {
+    // Constructor
+    }
+}
+
+class TrapDoor extends InnerDoor {
+    // needs to check if the door can be operated from this side
+    // it can only be operated from room_a
+    private boolean canBeOperated(Room room) {
+        return true;
+    }
+    public void open(Room room) {}
+    public void close(Room room) {}
+}
+
+class InnerSecurityDoor extends InnerDoor implements SecurityLock {
+    public boolean authenticate(String code) {
+        return true;
+    }
+}
+
+class EntranceDoor extends Door implements SecurityLock {
   private boolean lock_state;
+  protected Room room;
   public void lock() {}
   public void unlock() {}
   public boolean isLocked() {
-    return false;
+      return false;
+  }
+  public boolean authenticate(String code) {
+      return true;
   }
 }
 
@@ -82,53 +118,40 @@ class SecurityDoor extends Door {
   }
 }
 
-class Room {
-  private String name;
-  public void Room(String name){
-    this.name = name;
-  }
-}
 
-class Headquarter implements Detectable {
-  public Room[] rooms;
-  private Door[] doors;
-  public Headquarter() {
+class Headquarter {
+    public Room[] rooms;
+    private Door[] doors;
+    public Headquarter() {
     //Constructor
     // we set up a minimal headquarter
 
-    // first, the rooms
-    rooms = new Room[3];
-    rooms[0] = new Room("kitchen");
-    rooms[1] = new Room("office");
-    rooms[2] = new Room("bathroom");
+        // first, the rooms
+        rooms = new Room[4];
+        rooms[0] = new Room("hall");
+        rooms[1] = new Room("office");
+        rooms[2] = new Room("bathroom");
+        rooms[3] = new Room("traproom");
 
-    // then, connect the rooms by doors
-    doors = new Door[2];
-    doors[0] = (door) new InnerDoor("woodDoor", rooms[0], rooms[1]);
-    doors[1] = (door) new InnerDoor("fallTuere", rooms[1], rooms[2]);
-  }
-  public void hidePerson(Resident resi, Room room) {}
-  public boolean isHidden(Resident resi, Room room) {
-    return false;
-  }
-  public boolean detect() {
-    return false;
-  }
+        // then, connect the rooms by doors
+        doors = new Door[3];
+        doors[0] = (door) new EntranceDoor("steel", rooms[0]);
+        doors[1] = (door) new InnerDoor("wood", rooms[0], rooms[1]);
+        doors[2] = (door) new InnerDoor("wood", rooms[0], rooms[2]);
+        doors[3] = (door) new TrapDoor("steel", rooms[2], rooms[3]);
+    }
+    public void hidePerson(Resident resi, Room room) {}
+    public boolean isHidden(Resident resi, Room room) {
+        return false;
+    }
 }
 
 
-
-interface Detectable {
-  // not sure what this should do
-  // however, in any class that implements this interface, there must be
-  // a matching definition of detect()
-  void detect();
-}
 
 class Modellierungsaufgabe {
-  public static void main(String[] args) {
-    Headquarter hq = new Headquarter();
-    Human eike = new Human("Eike");
-    hq.hidePerson((room)eike, hq.rooms[1]);
-  }
+    public static void main(String[] args) {
+        Headquarter hq = new Headquarter();
+        Human eike = new Human("Eike");
+        hq.hidePerson((room)eike, hq.rooms[1]);
+    }
 }
