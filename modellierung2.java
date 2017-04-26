@@ -1,48 +1,56 @@
 class Resident {
-  public String name;
-  private Room assigned_room;
+    protected String name;
+    protected Room current_room;
 
-  public Resident(String name) {
+    public Resident(String name) {
     //Constructor
-    this.name = name;
-  }
+        this.name = name;
+    }
 
-  public void assignToRoom(Room room) {
-      // assigns a Resident to a Room
+    public void assignToRoom(Room room) {
+    // assigns a Resident to a Room
+    // for initial setup, overrides traps etc
+    }
+
+    public void goToRoom(Room room) {
+    // go to the adjacent room
     }
 }
 
 
 class Creature extends Resident {
-  public void breathe(){}
+    public void breathe() {
+
+    }
 }
 
 class Human extends Creature  {
-  public void checkApartement(Room room) {
-    // What is the function of this method?
-  }
+    public Resident[] checkRoom(Room room) {
+    // find the residents in this room
+    }
 }
 
 class Animal extends Creature {
-  public void adoptToHuman(Human human) {}
+    private Human owner;
+    public void adoptToHuman(Human human) {
+        this.owner = human;
+    }
 }
 
 class Machine extends Resident {
-  public void operate() {}
+    public void operate() {}
 }
 
 class Robot extends Machine implements Detectable {
-  public void followInstruction(int instructionID) {}
-  public boolean detect() {
-    return true;
-  }
+    public void followInstruction(int instructionID) {
+    }
 }
 
 
 
 abstract class Door {
-  private Room room_a;
-  private Room room_b;
+  protected boolean open_state;
+  public String material;
 
   public Door(String material, Room a, Room b) {
     //Constructor
@@ -101,6 +109,9 @@ class Headquarter implements Detectable {
   }
   public void hidePerson(Resident resi, Room room) {}
   public boolean isHidden(Resident resi, Room room) {
+    return false;
+  }
+  public boolean detect() {
     return false;
   }
 }
